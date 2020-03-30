@@ -1,10 +1,11 @@
 import 'todomvc-app-css/index.css'
 import Vue from 'vue'
 //用过滤器对 下面的状态进行设置
-var frlters = {
+var filters = {
   all(todos) {
     return todos
   },
+  //剩下的
   active(todos) {
     return todos.filter((todo) => {
       return !todo.completed
@@ -15,8 +16,8 @@ var frlters = {
       return todo.completed
     })
   }
-}
-new Vue({
+};
+let app = new Vue({
   el: '.todoapp',
 
   data: {
@@ -32,11 +33,13 @@ new Vue({
       }
     ],
     //双击编辑的初始值
-    editedTodo: null
+    editedTodo: null,
+    //哈希值
+    hashName: 'all'
   },
   computed: {
     remain() {
-      return frlters.active(this.todos).length
+      return filters.active(this.todos).length
     },
     isAll: {
       //控制全选状态
@@ -47,7 +50,11 @@ new Vue({
         this.todos.forEach((todo) => {
           todo.compuleted = value
         })
-      }
+      },
+    },
+    //状态 哈希
+    filteredTodos() {
+      return filters[this.hashName](this.todos)
     }
   },
 
@@ -89,7 +96,10 @@ new Vue({
       this.editedTodo = null;
       todo.content = this.editCache
     },
-
+    //点击清除 按钮事件  逻辑是 把剩下的 渲染给总数量 todos
+    clear() {
+      this.todos = filters.active(this.todos)
+    }
 
   },
   //自定义指令同上关联
@@ -100,5 +110,17 @@ new Vue({
       }
     }
   }
-})
-;
+});
+
+//哈希进行跳转
+function hashChange() {
+  let hashName = location.hash.replace(/#\/?/, '');
+  if (filters[hashName]) {
+    app.hashName = hashName
+  } else {
+    location.hash = '';
+    app.hashName = 'all'
+  }
+}
+
+window.addEventListener('hashchange', hashChange)

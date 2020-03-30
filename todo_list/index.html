@@ -20,7 +20,7 @@
     <input id="toggle-all" class="toggle-all" type="checkbox" v-model.trim="isAll">
     <label for="toggle-all">Mark all as complete</label>
     <ul class="todo-list">
-      <li v-for="(todo,index) in todos" :class="{completed:todo.completed ,editing:todo==editedTodo}">
+      <li v-for="(todo,index) in filteredTodos" :class="{completed:todo.completed ,editing:todo==editedTodo}">
         <div class="view">
           <input class="toggle" type="checkbox" v-model="todo.completed">
           <!-- 双击选中 -->
@@ -41,21 +41,21 @@
   <footer class="footer" v-show="todos.length">
     <!-- This should be `0 items left` by default -->
     <!--    //用过滤器进行渲染数据-->
-    <span class="todo-count"><strong>{{remain}}</strong> item left</span>
+    <span class="todo-count"><strong>{{remain}}</strong> {{todos.length<2?'item':'items'}} left</span>
     <!-- Remove this if you don't implement routing -->
     <ul class="filters">
       <li>
-        <a class="selected" href="#/">All</a>
+        <a :class="{selected:hashName=='all'}" href="#/">All</a>
       </li>
       <li>
-        <a href="#/active">Active</a>
+        <a :class="{selected:hashName=='active'}" href="#/active">Active</a>
       </li>
       <li>
-        <a href="#/completed">Completed</a>
+        <a :class="{selected:hashName=='completed'}" href="#/completed">Completed</a>
       </li>
     </ul>
-    <!-- Hidden if no completed items are left ↓ -->
-    <button class="clear-completed">Clear completed</button>
+    <!-- 点击清除事件 -->
+    <button class="clear-completed" @click="clear">Clear completed</button>
   </footer>
 </section>
 <footer class="info">
