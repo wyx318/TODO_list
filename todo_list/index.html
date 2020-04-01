@@ -23,7 +23,6 @@
       <li v-for="(todo,index) in filteredTodos" :class="{completed:todo.completed ,editing:todo==editedTodo}">
         <div class="view">
           <input class="toggle" type="checkbox" v-model="todo.completed">
-          <!-- 双击选中 -->
           <label @dblclick="editTodo(todo)">{{todo.content}}</label>
           <button class="destroy" @click="removeTodo(index)"></button>
         </div>
